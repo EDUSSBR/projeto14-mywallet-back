@@ -1,14 +1,13 @@
 import express from 'express';
-import { validateAccountInfo } from '../middlewares/validateLoginInfo.js';
-import { loginService } from '../services/loginService.js';
+import { validateAccountInfo } from '../middlewares/validateSignInInfo.js';
+import { signInService } from '../services/signInService.js';
 
 const router = new express.Router()
 
-router.post("/login", validateAccountInfo, async (req, res) => {
+router.post("/signin", validateAccountInfo, async (req, res) => {
     try {
         const { email, senha } = req.body
-        console.log(email, senha)
-        const generatedToken = await loginService( email, senha)
+        const generatedToken = await signInService( email, senha)
         res.status(200).send(generatedToken)
     } catch (error) {
         if (error.status){

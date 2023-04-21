@@ -1,8 +1,8 @@
 import { accountRepository } from '../repositories/accountRepository.js'
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
-export async function loginService(email, senha) {
-    const userExists = await accountRepository.getAccountByEmail("bls.dudu11@gmail.com")
+export async function signInService(email, senha) {
+    const userExists = await accountRepository.getAccountByEmail(email)
     if (userExists === null) {
         throw { message: "Usuário não encontrado", status: 404 }
     }
