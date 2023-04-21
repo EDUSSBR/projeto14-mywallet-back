@@ -4,7 +4,7 @@ import { createAccountService } from '../services/createAccountService.js';
 
 const router = new express.Router()
 
-router.post("/cadastro", validateAccountInfo, async (req, res) => {
+router.post("/signup", validateAccountInfo, async (req, res) => {
     try {
         const { nome, email, senha } = req.body
         await createAccountService(nome, email, senha)
