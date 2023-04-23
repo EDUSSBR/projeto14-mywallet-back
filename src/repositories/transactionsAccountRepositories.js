@@ -1,7 +1,5 @@
 import { ObjectId } from "mongodb"
 const db = (await import('../db/index.js')).default
-// db = db.default
-// console.log(await db.listCollections().toArray())
 
 export const transactionsAccountRepository = {
   db: db.collection("transactionsAccount"),
@@ -40,6 +38,9 @@ export const transactionsAccountRepository = {
         }
       },
       {
+        $sort: { "transaction.date": -1 }
+      },
+      {
         $group: {
           _id: '$accountID',
           nome: { $first: '$account.nome' },
@@ -62,9 +63,7 @@ export const transactionsAccountRepository = {
           _id: 0,
         }
       }
-
     ]).toArray()
-    console.log(transactions)
     if (transactions.length === 0) {
       return { saldo: 0, transactions: [] }
     }
