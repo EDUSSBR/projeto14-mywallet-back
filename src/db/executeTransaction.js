@@ -1,17 +1,16 @@
 import { MongoClient, ObjectId } from "mongodb";
 import dotenv from "dotenv";
 dotenv.config()
-
 const client = new MongoClient(process.env.DATABASE_URL)
 
 export async function executeTransaction(id, value, desc, type) {
-    const session = client.startSession();
-    session.startTransaction()
-    let newTransactionAccountID = new ObjectId();
     try {
+        await client.connect()
+        const session = client.startSession();
+        session.startTransaction()
+        let newTransactionAccountID = new ObjectId();
         const db = client.db()
         const user = await db.collection('account').findOne({_id: new ObjectId(id)})
-        // newTransactionAccountID = user.transactions
         if (user === null) {
             throw { message: "Houve um problema em sua transação", status: 404}
         } 
@@ -23,9 +22,12 @@ export async function executeTransaction(id, value, desc, type) {
         if (!transactionAccount.acknowledged || !transaction.acknowledged){
             throw { message: "Houve um problema em sua transação", status: 404}
         }
-        console.log(" TRANSACAO criada com sucesso",transaction)
+        console.log(" TRANSACAO criada com sucesso")
     } catch (e) {
         console.log(e)
+    } finally {
+        console.log("Closing db connection...")
+        await client.close();
     }
 
 }

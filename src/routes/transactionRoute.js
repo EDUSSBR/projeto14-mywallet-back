@@ -12,7 +12,6 @@ router.post("/transaction/:tipo", authenticateUserMiddleware, validateTransactio
         const { tipo } = req.params
         const { value, desc } = req.body
         await executeTransaction(id, value, desc, tipo)
-        console.log("##############",tipo)
         res.send("Transaction created!")
     } catch (e) {
         if (e.status) {

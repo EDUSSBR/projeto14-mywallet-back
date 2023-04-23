@@ -8,6 +8,7 @@ router.post("/signin", validateAccountInfo, async (req, res) => {
     try {
         const { email, senha } = req.body
         const generatedToken = await signInService( email, senha)
+        
         res.status(200).send(generatedToken)
     } catch (error) {
         if (error.status){
