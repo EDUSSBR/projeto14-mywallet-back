@@ -15,7 +15,12 @@ export const accountRepository = {
   setUserToken: async function setUserToken(userId, token) {
     return await this.db.updateOne({ _id: userId }, { $set: { token } })
   },
-  getTokensByID: async function getTokensByID(id) {
-    return await this.db.findOne({_id: new ObjectId(id)})
+  getUserByID: async function getUserByID(id) {
+    return await this.db.findOne({ _id: new ObjectId(id) })
+  },
+  getTokensByID: async function removeTokensByID(id, token) {
+    return await this.db.updateOne({ _id: new ObjectId(id) }, { $pull: { token } })
   }
 }
+
+
