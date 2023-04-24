@@ -3,8 +3,11 @@ const db = (await import('../db/index.js')).default
 
 export const transactionsAccountRepository = {
   db: db.collection("transactionsAccount"),
+  addNewAccount: async function addNewAccount(accountID){
+    const newAcc = await this.db.insertOne({accountID})
+    return newAcc.acknowledged
+  },
   getTransactionsByUserID: async function getTransactionsByUserID(id) {
-
     const transactions = await this.db.aggregate([
       {
         $match: { accountID: new ObjectId(id) }
@@ -52,21 +55,32 @@ export const transactionsAccountRepository = {
                 else: { $subtract: [0, { $toDouble: '$transaction.value' }] }
               }
             }
-          },
+          }
+        ,
           transactions: {
             $push: '$transaction',
+            }
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            nome: 1,
+            saldo: 1,
+            transactions: {
+              $filter: {
+                input: "$transactions",
+                as: "transaction",
+                cond: { $gt: ["$$transaction.value", 0] }
+              }
+            }
           }
         }
-      },
-      {
-        $project: {
-          _id: 0,
-        }
-      }
     ]).toArray()
-    if (transactions.length === 0) {
-      return { saldo: 0, transactions: [] }
-    }
+    console.log(transactions)
+    // if (transactions.length === 0) {
+    //   return [{ nome: transactions.nome, saldo: 0, transactions: [] }]
+    // }
 
     return transactions
   }

@@ -6,7 +6,9 @@ const db = (await import('../db/index.js')).default
 export const accountRepository = {
   db: db.collection("account"),
   createAccount: async function createAccount(nome, email, senha) {
-    return await this.db.insertOne({ nome, email, senha })
+    const id = new ObjectId()
+    const createdAccount = await this.db.insertOne({ _id: id , nome, email, senha })
+    return {id, acknowledged:createdAccount.acknowledged }
   },
   getAccountByEmail: async function getAccountByEmail(email) {
     const account = await this.db.findOne({ email })
@@ -18,7 +20,7 @@ export const accountRepository = {
   getUserByID: async function getUserByID(id) {
     return await this.db.findOne({ _id: new ObjectId(id) })
   },
-  getTokensByID: async function removeTokensByID(id, token) {
+  removeTokenByID: async function removeTokenByID(id, token) {
     return await this.db.updateOne({ _id: new ObjectId(id) }, { $pull: { token } })
   }
 }

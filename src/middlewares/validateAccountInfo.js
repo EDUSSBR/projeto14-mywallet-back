@@ -2,7 +2,7 @@ import Joi from "joi"
 import { strip } from "../helpers/strip.js"
 
 const accountSchema = Joi.object({
-    nome: Joi.string().min(3).max(100).pattern(/^[a-zA-Z]+$/).required(),
+    nome: Joi.string().min(3).max(100).pattern(/^[a-zA-Z \p{L}]+$/u).required(),
     email: Joi.string().email().required(),
     senha: Joi.string().min(3).required()
 })

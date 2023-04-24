@@ -25,7 +25,8 @@ router.post("/transaction/:tipo", authenticateUserMiddleware, validateTransactio
 
 router.get("/transaction", authenticateUserMiddleware, async (req, res) => {
     try {
-        const transactions = await getTransactionService(req.headers.id)
+        const {id} = req.headers
+        const transactions = await getTransactionService(id)
         res.send(transactions)
     } catch (e) {
         if (e.status) {
